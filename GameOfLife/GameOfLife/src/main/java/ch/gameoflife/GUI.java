@@ -13,16 +13,14 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class GUI extends JPanel{
 
     private CurrentCameraState cameraState;
+    private CurrentGameState gameState;
     private FrameMouseListener mouseAdapter;
     private FrameKeyListener keyAdapter;
-    private List<long[]> allAlive;
 
 
-
-
-    public GUI(CurrentCameraState cameraState, List<long[]> allAlive, FrameMouseListener mouseAdapter, FrameKeyListener keyAdapter){
+    public GUI(CurrentCameraState cameraState, CurrentGameState gameState, FrameMouseListener mouseAdapter, FrameKeyListener keyAdapter){
         this.cameraState = cameraState;
-        this.allAlive = allAlive;
+        this.gameState = gameState;
         this.mouseAdapter = mouseAdapter;
         this.mouseAdapter.setRepaintTrigger(this::repaint);
         this.keyAdapter = keyAdapter;
@@ -41,46 +39,6 @@ public class GUI extends JPanel{
         addKeyListener(this.keyAdapter);
 
         requestFocus();
-    }
-
-    public void start(){
-//        while (true){
-//            while (!this.nodesToFlip.isEmpty()){
-//                int[] coordinate = this.nodesToFlip.poll();
-//                this.board.flipIsAlive(coordinate[0], coordinate[1]);
-//                this.allAlive = this.board.getAllAlive();
-//                this.cameraState.setGridSize((int) Math.sqrt(board.getSize()));
-//
-//            }
-//
-//
-//            while (this.gameState.isRunning()){
-//                long start = System.nanoTime();
-//                this.board.runStep();
-//                long end = System.nanoTime();
-//                double loopMilliseconds = (double) (end - start) / 1000000;
-//                double loopsPerSec = (1000 / loopMilliseconds);
-//                System.out.println("time for loop: " + loopMilliseconds + "milliseconds");
-//                System.out.println("loops per second: " + loopsPerSec);
-//
-//                this.cameraState.setGridSize((int) Math.sqrt(this.board.getSize()));
-//                this.cameraState.offsetCameraIfGridSizeIncreased();
-//                this.allAlive = this.board.getAllAlive();
-//                SwingUtilities.invokeLater(this::repaint);
-//            }
-//
-//
-//
-////            this.gameState.setPixelSize(1024 / this.gridSize);
-//            SwingUtilities.invokeLater(this::repaint);
-//            try {
-//                Thread.sleep(100);
-//            } catch (InterruptedException e) {
-//
-//            }
-//
-//
-//        }
     }
 
     @Override
@@ -112,8 +70,8 @@ public class GUI extends JPanel{
         int startCol = this.cameraState.getCameraX() / this.cameraState.getPixelSize();
         int startRow = this.cameraState.getCameraY() / this.cameraState.getPixelSize();
 
-        if (!this.allAlive.isEmpty()) {
-            for (long[] coord : this.allAlive) {
+        if (!this.gameState.getAllAlive().isEmpty()) {
+            for (long[] coord : this.gameState.getAllAlive()) {
                 if (coord[0] >= startCol && coord[0] <= (startCol + nodesToDrawX)) {
                     if (coord[1] >= startRow && coord[1] <= (startRow + nodesToDrawY)) {
                         int x = (int) coord[0] * this.cameraState.getPixelSize() - this.cameraState.getCameraX();
