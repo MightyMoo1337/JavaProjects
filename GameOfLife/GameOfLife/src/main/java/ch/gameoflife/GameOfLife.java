@@ -2,8 +2,6 @@ package ch.gameoflife;
 
 
 import javax.swing.*;
-import java.awt.event.KeyListener;
-import java.util.List;
 import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
