@@ -17,7 +17,6 @@ public class GameOfLife {
     private FrameMouseListener mouseAdapter;
     private FrameKeyListener keyAdapter;
     private Queue<long[]> nodesToFlip;
-    private List<long[]> allAlive;
 
     public GameOfLife(){
 
@@ -27,14 +26,13 @@ public class GameOfLife {
 
 //        addRandomStartPattern();
 
-        this.allAlive = board.getAllAlive();
-        this.gameState = new CurrentGameState(false);
+        this.gameState = new CurrentGameState(false, this.board.getAllAlive());
         int panelLength = 1024;
         this.cameraState = new CurrentCameraState(panelLength / gridSize, gridSize, panelLength);
         this.mouseAdapter = new FrameMouseListener(this.nodesToFlip, this.cameraState);
         this.keyAdapter = new FrameKeyListener(this.gameState, this.cameraState);
         this.cameraState.setPixelSize(this.cameraState.getPanelLength() / this.cameraState.getGridSize());
-        this.gui = new GUI(this.cameraState, this.allAlive, this.mouseAdapter, this.keyAdapter);
+        this.gui = new GUI(this.cameraState, this.gameState, this.mouseAdapter, this.keyAdapter);
         start();
     }
 
@@ -57,8 +55,7 @@ public class GameOfLife {
             while (!this.nodesToFlip.isEmpty()){
                 long[] coordinate = this.nodesToFlip.poll();
                 this.board.flipIsAlive(coordinate[0], coordinate[1]);
-                this.allAlive.clear();
-                this.allAlive.addAll(this.board.getAllAlive());
+                this.gameState.setAllAlive(this.board.getAllAlive());
                 this.cameraState.setGridSize((int) Math.sqrt(board.getSize()));
                 SwingUtilities.invokeLater(this.gui::repaint);
             }
@@ -75,8 +72,7 @@ public class GameOfLife {
 
                 this.cameraState.setGridSize((int) Math.sqrt(this.board.getSize()));
                 this.cameraState.offsetCameraIfGridSizeIncreased();
-                this.allAlive.clear();
-                this.allAlive.addAll(this.board.getAllAlive());
+                this.gameState.setAllAlive(this.board.getAllAlive());
                 SwingUtilities.invokeLater(this.gui::repaint);
             }
 
